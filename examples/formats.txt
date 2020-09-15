@@ -1,0 +1,25 @@
+[youtube] ZrOKjDZOtkA: Downloading webpage
+[info] Available formats for ZrOKjDZOtkA:
+format code  extension  resolution note
+249          webm       audio only tiny   59k , opus @ 50k (48000Hz), 1.61MiB
+250          webm       audio only tiny   78k , opus @ 70k (48000Hz), 2.16MiB
+140          m4a        audio only tiny  131k , m4a_dash container, mp4a.40.2@128k (44100Hz), 4.00MiB
+251          webm       audio only tiny  152k , opus @160k (48000Hz), 4.30MiB
+160          mp4        144x144    144p   15k , avc1.4d400b, 25fps, video only, 349.30KiB
+133          mp4        240x240    240p   27k , avc1.4d400c, 25fps, video only, 544.77KiB
+278          webm       144x144    144p   27k , webm container, vp9, 25fps, video only, 598.47KiB
+394          mp4        144x144    144p   28k , av01.0.00M.08, 25fps, video only, 825.27KiB
+242          webm       240x240    240p   56k , vp9, 25fps, video only, 1.66MiB
+134          mp4        360x360    360p   59k , avc1.4d4015, 25fps, video only, 1.08MiB
+395          mp4        240x240    240p   68k , av01.0.00M.08, 25fps, video only, 1.85MiB
+243          webm       360x360    360p  101k , vp9, 25fps, video only, 2.90MiB
+135          mp4        480x480    480p  106k , avc1.4d401e, 25fps, video only, 1.87MiB
+396          mp4        360x360    360p  124k , av01.0.00M.08, 25fps, video only, 2.97MiB
+136          mp4        718x720    720p  194k , avc1.4d401f, 25fps, video only, 3.39MiB
+397          mp4        480x480    480p  204k , av01.0.01M.08, 25fps, video only, 4.81MiB
+244          webm       480x480    480p  257k , vp9, 25fps, video only, 4.93MiB
+137          mp4        1078x1080  1080p  312k , avc1.640020, 25fps, video only, 5.41MiB
+398          mp4        720x722    720p  407k , av01.0.04M.08, 25fps, video only, 9.59MiB
+247          webm       718x720    720p  496k , vp9, 25fps, video only, 11.04MiB
+248          webm       1078x1080  1080p  831k , vp9, 25fps, video only, 19.32MiB
+18           mp4        360x360    360p  306k , avc1.42001E, 25fps, mp4a.40.2@ 96k (44100Hz), 9.45MiB (best)

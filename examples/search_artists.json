@@ -1,0 +1,83 @@
+[
+  {
+    "browseId": "UC-w4BhQFLWGj2WcOe6qFx8Q",
+    "artist": "fripSide",
+    "thumbnails": [
+      {
+        "url": "https://lh3.googleusercontent.com/9q7NG_Hv8tGwkDFQf1cF-EvNl7ias4lUwvW6OopTOQPpQYyR_4aB7icDghl4G7z4F5RqEYYTRm0CiULdaA=w60-h60-p-l90-rj",
+        "width": 60,
+        "height": 60
+      },
+      {
+        "url": "https://lh3.googleusercontent.com/9q7NG_Hv8tGwkDFQf1cF-EvNl7ias4lUwvW6OopTOQPpQYyR_4aB7icDghl4G7z4F5RqEYYTRm0CiULdaA=w120-h120-p-l90-rj",
+        "width": 120,
+        "height": 120
+      },
+      {
+        "url": "https://lh3.googleusercontent.com/9q7NG_Hv8tGwkDFQf1cF-EvNl7ias4lUwvW6OopTOQPpQYyR_4aB7icDghl4G7z4F5RqEYYTRm0CiULdaA=w226-h226-p-l90-rj",
+        "width": 226,
+        "height": 226
+      },
+      {
+        "url": "https://lh3.googleusercontent.com/9q7NG_Hv8tGwkDFQf1cF-EvNl7ias4lUwvW6OopTOQPpQYyR_4aB7icDghl4G7z4F5RqEYYTRm0CiULdaA=w544-h544-p-l90-rj",
+        "width": 544,
+        "height": 544
+      }
+    ],
+    "resultType": "artist"
+  },
+  {
+    "browseId": "UC9rOfSQTymvFbQRGdzJE4yQ",
+    "artist": "\u4e95\u5185 \u6f84\u5b50",
+    "thumbnails": [
+      {
+        "url": "https://lh3.googleusercontent.com/haz9CjAv_dEwTMO2BWwCc8WWHljXu6VykhxmUdOjoxhqal9e2UgoInW9cBgxH9WIUmhBNggPZWQozUkL=w60-h60-p-l90-rj",
+        "width": 60,
+        "height": 60
+      },
+      {
+        "url": "https://lh3.googleusercontent.com/haz9CjAv_dEwTMO2BWwCc8WWHljXu6VykhxmUdOjoxhqal9e2UgoInW9cBgxH9WIUmhBNggPZWQozUkL=w120-h120-p-l90-rj",
+        "width": 120,
+        "height": 120
+      },
+      {
+        "url": "https://lh3.googleusercontent.com/haz9CjAv_dEwTMO2BWwCc8WWHljXu6VykhxmUdOjoxhqal9e2UgoInW9cBgxH9WIUmhBNggPZWQozUkL=w226-h226-p-l90-rj",
+        "width": 226,
+        "height": 226
+      },
+      {
+        "url": "https://lh3.googleusercontent.com/haz9CjAv_dEwTMO2BWwCc8WWHljXu6VykhxmUdOjoxhqal9e2UgoInW9cBgxH9WIUmhBNggPZWQozUkL=w544-h544-p-l90-rj",
+        "width": 544,
+        "height": 544
+      }
+    ],
+    "resultType": "artist"
+  },
+  {
+    "browseId": "UCQtGw_vQWuDeK4qLyHrhweA",
+    "artist": "Ayako Ishikawa",
+    "thumbnails": [
+      {
+        "url": "https://lh3.googleusercontent.com/R2gv3qO01NhBfa2itLF-l17eEWvFc_iYBmixaYHV54yDo2cg5146qdjTeyCky9NbIfxMvyc-Kj0F5-o6zw=w60-h60-l90-rj",
+        "width": 60,
+        "height": 60
+      },
+      {
+        "url": "https://lh3.googleusercontent.com/R2gv3qO01NhBfa2itLF-l17eEWvFc_iYBmixaYHV54yDo2cg5146qdjTeyCky9NbIfxMvyc-Kj0F5-o6zw=w120-h120-l90-rj",
+        "width": 120,
+        "height": 120
+      },
+      {
+        "url": "https://lh3.googleusercontent.com/R2gv3qO01NhBfa2itLF-l17eEWvFc_iYBmixaYHV54yDo2cg5146qdjTeyCky9NbIfxMvyc-Kj0F5-o6zw=w226-h226-l90-rj",
+        "width": 226,
+        "height": 226
+      },
+      {
+        "url": "https://lh3.googleusercontent.com/R2gv3qO01NhBfa2itLF-l17eEWvFc_iYBmixaYHV54yDo2cg5146qdjTeyCky9NbIfxMvyc-Kj0F5-o6zw=w544-h544-l90-rj",
+        "width": 544,
+        "height": 544
+      }
+    ],
+    "resultType": "artist"
+  }
+]

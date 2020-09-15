@@ -1,0 +1,14 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.doubanio.com/simple/"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+ytmusicapi = '*'
+feeluown = {extras = ["battery"],version = "*"}
+pydantic = '*'
+qasync = '*'
+PyQt5 = '*'
+fuo-ytmusic = {editable = true, path = "."}
