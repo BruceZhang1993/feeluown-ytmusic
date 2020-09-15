@@ -238,19 +238,8 @@ class YtdlExtract(BaseSchema):
     album: str
     title: str
     formats: List[YtdlNestedFormat]
-    requested_formats: List[YtdlNestedFormat]
-
-    def get_video_url(self):
-        for f in self.requested_formats:
-            if f.type == YtdlType.video:
-                return f.url
-        return None
-
-    def get_audio_url(self):
-        for f in self.requested_formats:
-            if f.type == YtdlType.audio:
-                return f.url
-        return None
+    requested_formats: Optional[List[YtdlNestedFormat]]
+    url: Optional[str]
 
 
 from fuo_ytmusic.models import YtMusicSongModel, YtMusicArtistModel, YtMusicAlbumModel, YtMusicMvModel

@@ -77,15 +77,15 @@ class YtMusicExtractor(metaclass=Singleton):
     def get_url(self, vid: str):
         if vid not in self.audio_cache.keys():
             from fuo_ytmusic.schemas import YtdlExtract
-            out: bytes = self.run('--print-json', '-s', f'https://{self.MUSIC_DOMAIN}/watch?v={vid}', raw=True)
-            self.audio_cache[vid] = YtdlExtract.parse_raw(out).get_audio_url()
+            out: bytes = self.run('--print-json', '-s', '-f', 'mp4/bestvideo,bestaudio', f'https://{self.MUSIC_DOMAIN}/watch?v={vid}', raw=True)
+            self.audio_cache[vid] = YtdlExtract.parse_raw(out.split(b'\n')[1]).url
         return self.audio_cache[vid]
 
     def get_mv(self, vid: str):
         if vid not in self.video_cache.keys():
             from fuo_ytmusic.schemas import YtdlExtract
-            out: bytes = self.run('--print-json', '-s', f'https://{self.MUSIC_DOMAIN}/watch?v={vid}', raw=True)
-            self.video_cache[vid] = YtdlExtract.parse_raw(out).get_video_url()
+            out: bytes = self.run('--print-json', '-s', '-f', 'mp4/bestvideo,bestaudio', f'https://{self.MUSIC_DOMAIN}/watch?v={vid}', raw=True)
+            self.video_cache[vid] = YtdlExtract.parse_raw(out.split(b'\n')[0]).url
         return self.video_cache[vid]
 
 
