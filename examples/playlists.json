@@ -1,0 +1,33 @@
+[
+  {
+    "title": "Your Likes",
+    "playlistId": "LM",
+    "thumbnails": [
+      {
+        "url": "https://www.gstatic.com/youtube/media/ytm/images/pbg/liked-songs-@192.png",
+        "width": 192,
+        "height": 192
+      },
+      {
+        "url": "https://www.gstatic.com/youtube/media/ytm/images/pbg/liked-songs-@288.png",
+        "width": 288,
+        "height": 288
+      },
+      {
+        "url": "https://www.gstatic.com/youtube/media/ytm/images/pbg/liked-songs-@384.png",
+        "width": 384,
+        "height": 384
+      },
+      {
+        "url": "https://www.gstatic.com/youtube/media/ytm/images/pbg/liked-songs-@576.png",
+        "width": 576,
+        "height": 576
+      },
+      {
+        "url": "https://www.gstatic.com/youtube/media/ytm/images/pbg/liked-songs-@1200.png",
+        "width": 1200,
+        "height": 1200
+      }
+    ]
+  }
+]

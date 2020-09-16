@@ -1,4 +1,5 @@
-from fuocore.models import BaseModel, SearchModel, SearchType, SongModel, ArtistModel, AlbumModel, MvModel
+from fuocore.models import BaseModel, SearchModel, SearchType, SongModel, ArtistModel, AlbumModel, MvModel, UserModel, \
+    cached_field, PlaylistModel
 
 from .provider import provider
 from .service import YtMusicService
@@ -18,6 +19,7 @@ class YtMusicMvModel(MvModel, YtMusicBaseModel):
 class YtMusicSongModel(SongModel, YtMusicBaseModel):
     @classmethod
     def get(cls, identifier):
+        print(identifier)
         data = cls.api.detail(identifier)
         return YtMusicSongSchema(**data).model
 
@@ -34,6 +36,28 @@ class YtMusicSearchModel(SearchModel, YtMusicBaseModel):
     pass
 
 
+class YtMusicPlaylistModel(PlaylistModel, YtMusicBaseModel):
+    @classmethod
+    def get(cls, identifier):
+        playlist = cls.api.get_playlist(identifier)
+        return YtMusicPlaylistSchema(**playlist).model
+
+
+class YtMusicUserModel(UserModel, YtMusicBaseModel):
+    class Meta:
+        fields_no_get = ('playlists', 'fav_playlists', 'fav_songs',
+                         'fav_albums', 'fav_artists', 'rec_songs', 'rec_playlists')
+
+    @classmethod
+    def get(cls, identifier):
+        return YtMusicUserSchema(name='').model
+
+    @cached_field(ttl=5)
+    def playlists(self):
+        playlists = self.api.playlists()
+        return [YtMusicUserPlaylistSchema(**playlist).model for playlist in playlists]
+
+
 def search(keyword, **kwargs) -> YtMusicSearchModel:
     type_ = SearchType.parse(kwargs.get('type_'))
     if type_ == SearchType.so:
@@ -47,5 +71,5 @@ def search(keyword, **kwargs) -> YtMusicSearchModel:
 
 from .service import YtItemType
 from .schemas import (
-    YtMusicSearchSongSchema, YtMusicSongSchema
+    YtMusicSearchSongSchema, YtMusicSongSchema, YtMusicUserSchema, YtMusicUserPlaylistSchema, YtMusicPlaylistSchema
 )

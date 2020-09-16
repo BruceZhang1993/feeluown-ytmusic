@@ -155,10 +155,10 @@ class YtMusicSongSchema(BaseSchema):
     isPrivate: bool
     isUnpluggedCorpus: bool
     isLiveContent: bool
-    provider: str
-    artists: List[str]
-    copyright: str
-    release: str
+    provider: Optional[str]
+    artists: Optional[List[str]]
+    copyright: Optional[str]
+    release: Optional[str]
     production: Optional[List[str]]
     streamingData: YtMusicStreamingData
 
@@ -207,7 +207,7 @@ class YtdlFormat(BaseSchema):
     @classmethod
     def parse_line(cls, line: str):
         m = re.match(r'(\d+)\s+(\w+)\s+([\dx]+|audio\sonly)\s+(\w+)\s+(\w+)\s+,\s+(.*)', line)
-        return cls(code=int(m.group(1)), extension=m.group(2),
+        return cls(code=int(m.group(1)), extension=YtdlExtension(m.group(2)),
                    type=YtdlType.audio if m.group(3) == 'audio only' else YtdlType.video, resolution=m.group(3),
                    note=m.group(4, 5, 6), quality=m.group(4), bitrate=int(m.group(5).rstrip('k')) * 1000)
 
@@ -233,13 +233,91 @@ class YtdlNestedFormat(BaseSchema):
 
 class YtdlExtract(BaseSchema):
     id: str
-    creator: str
-    artist: str
-    album: str
+    creator: Optional[str]
+    artist: Optional[str]
+    album: Optional[str]
     title: str
     formats: List[YtdlNestedFormat]
     requested_formats: Optional[List[YtdlNestedFormat]]
     url: Optional[str]
 
 
-from fuo_ytmusic.models import YtMusicSongModel, YtMusicArtistModel, YtMusicAlbumModel, YtMusicMvModel
+class YtMusicUserSchema(BaseSchema):
+    name: str
+
+    @property
+    def model(self):
+        return YtMusicUserModel(name=self.name)
+
+
+class YtMusicPlaylistSongSchema(BaseSchema):
+    videoId: str
+    title: str
+    artists: List[YtMusicSearchNestedArtistSchema]
+    album: Optional[YtMusicSearchNestedAlbumSchema]
+    likeStatus: str
+    thumbnails: List[YtMusicSearchNestedThumbnailSchema]
+    duration: timedelta
+
+    @property
+    def cover(self):
+        cover = None
+        if len(self.thumbnails) > 0:
+            cover = self.thumbnails[0].url
+        return cover
+
+    @property
+    def model(self):
+        return YtMusicSongModel(identifier=self.videoId, title=self.title, duration=self.duration.total_seconds() * 1000,
+                                cover=self.cover, artists=list(map(lambda a: a.model, self.artists)),
+                                album=self.album.model if self.album is not None
+                                else YtMusicSearchNestedAlbumSchema(id='', name='').model)
+
+
+class YtMusicPlaylistSchema(BaseSchema):
+    id: str
+    privacy: str
+    title: str
+    thumbnails: List[YtMusicSearchNestedThumbnailSchema]
+    description: str
+    duration: str
+    trackCount: int
+    tracks: List[YtMusicPlaylistSongSchema]
+
+    @property
+    def cover(self):
+        for thumbnail in self.thumbnails:
+            cover = thumbnail.url
+            return cover
+        return ''
+
+    @property
+    def songs(self):
+        return [track.model for track in self.tracks]
+
+    @property
+    def model(self):
+        return YtMusicPlaylistModel(identifier=self.id, name=self.title, cover=self.cover,
+                                    desc=self.description, songs=self.songs)
+
+
+class YtMusicUserPlaylistSchema(BaseSchema):
+    title: str
+    playlistId: str
+    thumbnails: List[YtMusicSearchNestedThumbnailSchema]
+
+    @property
+    def cover(self):
+        for thumbnail in self.thumbnails:
+            cover = thumbnail.url
+            return cover
+        return ''
+
+    @property
+    def model(self):
+        return YtMusicPlaylistModel(identifier=self.playlistId, name=self.title, cover=self.cover,
+                                    desc='')
+
+
+from fuo_ytmusic.models import YtMusicSongModel, YtMusicArtistModel, YtMusicAlbumModel, YtMusicMvModel, \
+    YtMusicUserModel, YtMusicPlaylistModel

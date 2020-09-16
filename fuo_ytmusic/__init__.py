@@ -7,17 +7,16 @@ __identifier__ = 'ytmusic'
 
 from feeluown.app import App
 
+from .ui import UiManager
+
+ui_mgr = None
+
 
 def enable(app: App):
+    global ui_mgr
     app.library.register(provider)
     if app.mode & App.GuiMode:
-        pm = app.pvd_uimgr.create_item(
-            name=provider.identifier,
-            text=__alias__,
-            symbol='♫ ',
-            desc='未实现',
-        )
-        app.pvd_uimgr.add_item(pm)
+        ui_mgr = ui_mgr or UiManager(app)
 
 
 def disable(app: App):

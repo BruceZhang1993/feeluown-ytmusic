@@ -3,7 +3,7 @@ from enum import Enum
 from os import environ as env
 from pathlib import Path
 import subprocess
-from typing import Union
+from typing import Union, Optional
 
 import ytmusicapi
 
@@ -31,6 +31,10 @@ class YtMusicService(metaclass=Singleton):
     AUTH_FILE = Path.home() / '.FeelUOwn' / 'data' / 'ytmusic_header.json'
 
     def __init__(self):
+        self.ytmusic: Optional[ytmusicapi.YTMusic] = None
+        self.init()
+
+    def init(self):
         if self.AUTH_FILE.exists():
             self.ytmusic = ytmusicapi.YTMusic(self.AUTH_FILE.as_posix())
         else:
@@ -41,6 +45,12 @@ class YtMusicService(metaclass=Singleton):
 
     def detail(self, id_: str):
         return self.ytmusic.get_song(id_)
+
+    def playlists(self):
+        return self.ytmusic.get_library_playlists()
+
+    def get_playlist(self, playlist_id, limit=200):
+        return self.ytmusic.get_playlist(playlist_id, limit=limit)
 
 
 class YtMusicExtractor(metaclass=Singleton):
@@ -90,4 +100,5 @@ class YtMusicExtractor(metaclass=Singleton):
 
 
 if __name__ == '__main__':
-    print(YtMusicExtractor().get_url('ZrOKjDZOtkA'))
+    import json
+    print(json.dumps(YtMusicService().get_playlist('LM', limit=1)))

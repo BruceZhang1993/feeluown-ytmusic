@@ -8,6 +8,7 @@ class YtMusicProvider(AbstractProvider):
     def __init__(self):
         super().__init__()
         self.api = YtMusicService()
+        self.user = None
 
     @property
     def name(self):
