@@ -32,25 +32,39 @@ class YtMusicService(metaclass=Singleton):
 
     def __init__(self):
         self.ytmusic: Optional[ytmusicapi.YTMusic] = None
-        self.init()
+        self.is_authed = False
 
     def init(self):
-        if self.AUTH_FILE.exists():
+        if not self.is_authed and self.AUTH_FILE.exists():
             self.ytmusic = ytmusicapi.YTMusic(self.AUTH_FILE.as_posix())
-        else:
-            self.ytmusic = ytmusicapi.YTMusic()
+            self.is_authed = True
+        elif self.ytmusic is None:
+            if self.AUTH_FILE.exists():
+                self.ytmusic = ytmusicapi.YTMusic(self.AUTH_FILE.as_posix())
+                self.is_authed = True
+            else:
+                self.ytmusic = ytmusicapi.YTMusic()
+                self.is_authed = False
 
     def search(self, keyword: str, sfilter=YtItemType.songs):
+        self.init()
         return self.ytmusic.search(keyword, sfilter.value)
 
     def detail(self, id_: str):
+        self.init()
         return self.ytmusic.get_song(id_)
 
     def playlists(self):
+        self.init()
         return self.ytmusic.get_library_playlists()
 
     def get_playlist(self, playlist_id, limit=200):
+        self.init()
         return self.ytmusic.get_playlist(playlist_id, limit=limit)
+
+    def artist_detail(self, id_: str):
+        self.init()
+        return self.ytmusic.get_artist(id_)
 
 
 class YtMusicExtractor(metaclass=Singleton):
@@ -101,4 +115,4 @@ class YtMusicExtractor(metaclass=Singleton):
 
 if __name__ == '__main__':
     import json
-    print(json.dumps(YtMusicService().get_playlist('LM', limit=1)))
+    print(json.dumps(YtMusicService().get_playlist('VLPLFd1GuLx-VLz-jTU1GcvVJFz4mV1tWEaP')))

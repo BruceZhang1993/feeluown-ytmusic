@@ -1,8 +1,7 @@
 import re
 from datetime import timedelta
 from enum import Enum
-from typing import List, Optional
-from urllib.parse import unquote, parse_qs, urljoin
+from typing import List, Optional, Any
 
 from pydantic import BaseModel as PydanticBaseSchema, Field
 
@@ -33,7 +32,7 @@ class YtMusicSearchNestedArtistSchema(BaseSchema):
 
 
 class YtMusicSearchNestedAlbumSchema(BaseSchema):
-    id: str
+    id: str = Field(default='')
     name: str
 
     @property
@@ -52,13 +51,13 @@ class YtMusicSearchSongSchema(BaseSchema):
     title: str
     artists: List[YtMusicSearchNestedArtistSchema]
     album: YtMusicSearchNestedAlbumSchema
-    duration: timedelta
+    duration: Optional[timedelta]
     thumbnails: List[YtMusicSearchNestedThumbnailSchema]
-    resultType: YtItemReturnType
+    resultType: Optional[YtItemReturnType]
 
     @property
     def model(self):
-        return YtMusicSongModel(identifier=self.videoId, duration=self.duration.total_seconds() * 1000,
+        return YtMusicSongModel(identifier=self.videoId, duration=self.duration.total_seconds() * 1000 if self.duration else None,
                                 title=self.title, artists=list(map(lambda a: a.model, self.artists)),
                                 album=self.album.model)
 
@@ -66,11 +65,22 @@ class YtMusicSearchSongSchema(BaseSchema):
 class YtMusicSearchAlbumSchema(BaseSchema):
     browseId: str
     title: str
-    type: str
-    artist: str
+    type: Optional[str]
+    artist: Optional[str]
     year: str
     thumbnails: List[YtMusicSearchNestedThumbnailSchema]
-    resultType: YtItemReturnType
+    resultType: Optional[YtItemReturnType]
+
+    @property
+    def cover(self):
+        cover = ''
+        if len(self.thumbnails) > 0:
+            cover = self.thumbnails[-1].url
+        return cover
+
+    @property
+    def model(self):
+        return YtMusicAlbumModel(identifier=self.browseId, name=self.title, cover=self.cover)
 
 
 class YtMusicSearchArtistSchema(BaseSchema):
@@ -79,14 +89,42 @@ class YtMusicSearchArtistSchema(BaseSchema):
     thumbnails: List[YtMusicSearchNestedThumbnailSchema]
     resultType: YtItemReturnType
 
+    @property
+    def cover(self):
+        cover = ''
+        if len(self.thumbnails) > 0:
+            cover = self.thumbnails[-1].url
+        return cover
+
+    @property
+    def model(self):
+        return YtMusicArtistModel(identifier=self.browseId, name=self.artist, cover=self.cover)
+
 
 class YtMusicSearchPlaylistSchema(BaseSchema):
     browseId: str
     title: str
     author: str
-    itemCount: int
+    itemCount: str
     thumbnails: List[YtMusicSearchNestedThumbnailSchema]
     resultType: YtItemReturnType
+
+    @property
+    def count(self):
+        if self.itemCount.endswith('+'):
+            return int(self.itemCount.rstrip('+'))
+        return int(self.itemCount)
+
+    @property
+    def cover(self):
+        cover = ''
+        if len(self.thumbnails) > 0:
+            cover = self.thumbnails[-1].url
+        return cover
+
+    @property
+    def model(self):
+        return YtMusicPlaylistModel(identifier=self.browseId, name=self.title, cover=self.cover, desc=self.author)
 
 
 class YtMusicStreamingAdaptiveFormat(BaseSchema):
@@ -105,7 +143,7 @@ class YtMusicStreamingAdaptiveFormat(BaseSchema):
     projectionType: str
     averageBitrate: int
     approxDurationMs: int
-    signatureCipher: str
+    signatureCipher: Optional[str]
 
 
 class YtMusicStreamingFormat(BaseSchema):
@@ -125,7 +163,7 @@ class YtMusicStreamingFormat(BaseSchema):
     approxDurationMs: int
     audioSampleRate: int
     audioChannels: int
-    signatureCipher: str
+    signatureCipher: Optional[str]
 
 
 class YtMusicStreamingData(BaseSchema):
@@ -133,6 +171,46 @@ class YtMusicStreamingData(BaseSchema):
     formats: List[YtMusicStreamingFormat]  # 音频格式
     adaptiveFormats: List[YtMusicStreamingAdaptiveFormat]  # 视频格式
     probeUrl: Optional[str]
+
+
+class _YtMusicArtistSongsSchema(BaseSchema):
+    browseId: Optional[str]
+    results: List[YtMusicSearchSongSchema]
+
+
+class _YtMusicArtistAlbumsSchema(BaseSchema):
+    browseId: Optional[str]
+    results: List[YtMusicSearchAlbumSchema]
+
+
+class YtMusicArtistSchema(BaseSchema):
+    channelId: str
+    name: str
+    description: Optional[str]
+    views: Optional[str]
+    subscribers: str
+    subscribed: Optional[bool]
+    thumbnails: List[YtMusicSearchNestedThumbnailSchema]
+    songs: Optional[_YtMusicArtistSongsSchema]
+    albums: Optional[_YtMusicArtistAlbumsSchema]
+    singles: Optional[_YtMusicArtistAlbumsSchema]
+    videos: Any
+
+    @property
+    def cover(self):
+        cover = ''
+        if len(self.thumbnails) > 0:
+            cover = self.thumbnails[-1].url
+        return cover
+
+    @property
+    def model(self):
+        return YtMusicArtistModel(identifier=self.channelId, name=self.name, desc=self.description, cover=self.cover,
+                                  songs_browse_id=self.songs.browseId if self.songs else None,
+                                  albums_browse_id=self.albums.browseId if self.albums else None,
+                                  singles_browse_id=self.singles.browseId if self.singles else None,
+                                  _songs=[r.model for r in self.songs.results] if self.songs else [],
+                                  _albums=[r.model for r in self.albums.results] if self.albums else [])
 
 
 class YtMusicSongSchema(BaseSchema):
@@ -164,24 +242,22 @@ class YtMusicSongSchema(BaseSchema):
 
     @property
     def cover(self):
-        cover = None
+        cover = ''
         if len(self.thumbnail.thumbnails) > 0:
-            cover = self.thumbnail.thumbnails[0].url
+            cover = self.thumbnail.thumbnails[-1].url
         return cover
 
-    @property
     def mv(self):
         mv = YtMusicExtractor().get_mv(self.videoId)
         return YtMusicMvModel(name=self.title, desc=self.shortDescription, cover=self.cover,
                               artist=','.join(self.artists), media=mv)
 
-    @property
     def url(self):
         return YtMusicExtractor().get_url(self.videoId)
 
     @property
     def model(self):
-        return YtMusicSongModel(title=self.title, duration=self.lengthSeconds * 1000, mv=self.mv, url=self.url)
+        return YtMusicSongModel(title=self.title, duration=self.lengthSeconds * 1000, schema_model=self)
 
 
 class YtdlExtension(Enum):
@@ -251,19 +327,19 @@ class YtMusicUserSchema(BaseSchema):
 
 
 class YtMusicPlaylistSongSchema(BaseSchema):
-    videoId: str
+    videoId: Optional[str]
     title: str
     artists: List[YtMusicSearchNestedArtistSchema]
     album: Optional[YtMusicSearchNestedAlbumSchema]
-    likeStatus: str
+    likeStatus: Optional[str]
     thumbnails: List[YtMusicSearchNestedThumbnailSchema]
     duration: timedelta
 
     @property
     def cover(self):
-        cover = None
+        cover = ''
         if len(self.thumbnails) > 0:
-            cover = self.thumbnails[0].url
+            cover = self.thumbnails[-1].url
         return cover
 
     @property
@@ -286,10 +362,10 @@ class YtMusicPlaylistSchema(BaseSchema):
 
     @property
     def cover(self):
-        for thumbnail in self.thumbnails:
-            cover = thumbnail.url
-            return cover
-        return ''
+        cover = ''
+        if len(self.thumbnails) > 0:
+            cover = self.thumbnails[-1].url
+        return cover
 
     @property
     def songs(self):
@@ -308,10 +384,10 @@ class YtMusicUserPlaylistSchema(BaseSchema):
 
     @property
     def cover(self):
-        for thumbnail in self.thumbnails:
-            cover = thumbnail.url
-            return cover
-        return ''
+        cover = ''
+        if len(self.thumbnails) > 0:
+            cover = self.thumbnails[-1].url
+        return cover
 
     @property
     def model(self):
